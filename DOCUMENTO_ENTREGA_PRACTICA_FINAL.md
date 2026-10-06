@@ -134,19 +134,24 @@ PS F:\DIPLOMADOS\USIP\modulo8\practica-final> docker compose build
 ---
 
 ### 🔹 Evidencia 2: Publicación en Docker Hub
-Comando de etiquetado y subida al registro oficial de Docker Hub.
+Comando de autenticación, etiquetado y subida al registro oficial de Docker Hub.
 
 ```powershell
-docker tag veravelasquez-frontend:v1 NoeVelasquez/veravelasquez-frontend:v1
-docker tag veravelasquez-backend:v1 NoeVelasquez/veravelasquez-backend:v1
+# 1. Iniciar sesión en Docker Hub
+docker login
 
-docker push NoeVelasquez/veravelasquez-frontend:v1
-docker push NoeVelasquez/veravelasquez-backend:v1
+# 2. Etiquetar imágenes (en minúsculas según la convención de Docker Hub)
+docker tag veravelasquez-frontend:v1 noevelasquez/veravelasquez-frontend:v1
+docker tag veravelasquez-backend:v1 noevelasquez/veravelasquez-backend:v1
+
+# 3. Subir imágenes
+docker push noevelasquez/veravelasquez-frontend:v1
+docker push noevelasquez/veravelasquez-backend:v1
 ```
 
 > **Repositorios Públicos en Docker Hub:**
-> * `https://hub.docker.com/r/NoeVelasquez/veravelasquez-frontend`
-> * `https://hub.docker.com/r/NoeVelasquez/veravelasquez-backend`
+> * `https://hub.docker.com/r/noevelasquez/veravelasquez-frontend`
+> * `https://hub.docker.com/r/noevelasquez/veravelasquez-backend`
 
 ---
 
