@@ -6,13 +6,14 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Configuración de base de datos mediante variables de entorno
+// Configuración de base de datos con charset utf8mb4 explícito
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'cv_user',
   password: process.env.DB_PASSWORD || 'cv_password',
   database: process.env.DB_NAME || 'cv_db',
   port: parseInt(process.env.DB_PORT || '3306', 10),
+  charset: 'utf8mb4',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -24,14 +25,22 @@ let pool = null;
 app.use(cors());
 app.use(express.json());
 
-// Función para inicializar y verificar conexión a MySQL con reintentos
+// Middleware para forzar cabecera de codificación UTF-8 en todas las respuestas JSON
+app.use((req, res, next) => {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  next();
+});
+
+// Función para inicializar y verificar conexión a MySQL con soporte de reintentos
 async function initDatabaseConnection(retries = 10, delayMs = 3000) {
   for (let i = 1; i <= retries; i++) {
     try {
       console.log(`[DB] Intentando conectar a MySQL en ${dbConfig.host}:${dbConfig.port} (Intento ${i}/${retries})...`);
       pool = mysql.createPool(dbConfig);
       const connection = await pool.getConnection();
-      console.log('✅ [DB] Conexión establecida exitosamente con MySQL.');
+      await connection.query("SET NAMES 'utf8mb4'");
+      await connection.query("SET CHARACTER SET utf8mb4");
+      console.log('✅ [DB] Conexión establecida exitosamente con MySQL (UTF-8 activado).');
       connection.release();
       return true;
     } catch (err) {
@@ -59,7 +68,7 @@ app.get('/health', async (req, res) => {
   }
 });
 
-// Endpoint principal requerido por la práctica: GET /cv
+// Endpoint principal requerido: GET /cv
 app.get('/cv', async (req, res) => {
   try {
     if (!pool) {

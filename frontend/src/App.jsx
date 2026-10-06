@@ -53,7 +53,7 @@ export default function App() {
 
   return (
     <main className="cv-container">
-      {/* Top Banner / Infrastructure Bar */}
+      {/* Top Banner / IÃ­anfrastructure Bar */}
       <header className="system-header glass-panel">
         <div className="system-brand">
           <Layers className="icon-pulse text-cyan" size={26} />

@@ -1,5 +1,8 @@
--- Base de datos para la Práctica Final de Docker - CV Personal
-CREATE DATABASE IF NOT EXISTS cv_db;
+-- Configuración explícita de codificación UTF-8 para soporte de tildes y caracteres especiales
+SET NAMES 'utf8mb4';
+SET CHARACTER SET utf8mb4;
+
+CREATE DATABASE IF NOT EXISTS cv_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE cv_db;
 
 -- 1. Tabla: persona
@@ -9,13 +12,13 @@ CREATE TABLE IF NOT EXISTS persona (
     apellido VARCHAR(100) NOT NULL,
     ciudad VARCHAR(100) NOT NULL,
     foto VARCHAR(500) NOT NULL,
-    profesion VARCHAR(200) DEFAULT 'Ingeniera de Sistemas | Especialista en QA',
+    profesion VARCHAR(200) DEFAULT 'Ingeniera de Sistemas | Especialista en Calidad de Software & Tecnologías aplicadas al Aprendizaje',
     email VARCHAR(150) DEFAULT 'veravelasqueznoemirosio@gmail.com',
     telefono VARCHAR(50) DEFAULT '+591 78836023',
     linkedin VARCHAR(255) DEFAULT 'https://www.linkedin.com/in/noemi-rosio-vera-velasquez-30351a263',
     github VARCHAR(255) DEFAULT 'https://github.com/NoeVelasquez',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 2. Tabla: formacion
 CREATE TABLE IF NOT EXISTS formacion (
@@ -26,16 +29,16 @@ CREATE TABLE IF NOT EXISTS formacion (
     persona_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (persona_id) REFERENCES persona(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Inserción de datos reales del CV de Noemi Rosio Vera Velasquez
+-- Inserción de datos con caracteres correctamente codificados en UTF-8 y foto oficial
 INSERT INTO persona (id, nombre, apellido, ciudad, foto, profesion, email, telefono, linkedin, github) 
 VALUES (
     1, 
     'Noemi Rosio', 
     'Vera Velasquez', 
     'La Paz, Bolivia', 
-    'https://raw.githubusercontent.com/NoeVelasquez/NoeVelasquez/main/profile.jpg',
+    '/profile.jpg',
     'Ingeniera de Sistemas | Especialista en Calidad de Software & Tecnologías aplicadas al Aprendizaje',
     'veravelasqueznoemirosio@gmail.com',
     '+591 78836023',
@@ -45,7 +48,8 @@ VALUES (
     nombre=VALUES(nombre), 
     apellido=VALUES(apellido), 
     ciudad=VALUES(ciudad), 
-    foto=VALUES(foto);
+    foto=VALUES(foto),
+    profesion=VALUES(profesion);
 
 INSERT INTO formacion (titulo, institucion, anio, persona_id) 
 VALUES 
