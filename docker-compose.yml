@@ -1,0 +1,71 @@
+services:
+  # 1. Servicio Base de Datos MySQL
+  database:
+    image: mysql:8.0
+    container_name: cv-database
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: cv_db
+      MYSQL_USER: cv_user
+      MYSQL_PASSWORD: cv_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - cv_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # 2. Servicio Backend Node.js
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: via-backend:v1
+    container_name: cv-backend
+    restart: always
+    environment:
+      PORT: 4000
+      DB_HOST: database
+      DB_USER: cv_user
+      DB_PASSWORD: cv_password
+      DB_NAME: cv_db
+      DB_PORT: 3306
+    ports:
+      - "4000:4000"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - cv_network
+
+  # 3. Servicio Frontend React + Nginx
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: via-frontend:v1
+    container_name: cv-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - cv_network
+
+# 9. Volumen persistente para datos de MySQL
+volumes:
+  mysql_data:
+    driver: local
+
+# 10. Red única para interconexión de contenedores
+networks:
+  cv_network:
+    driver: bridge
