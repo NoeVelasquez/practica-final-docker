@@ -59,7 +59,7 @@ app.get('/health', async (req, res) => {
   }
 });
 
-// Endpoint principal requerido: GET /cv
+// Endpoint principal requerido por la práctica: GET /cv
 app.get('/cv', async (req, res) => {
   try {
     if (!pool) {
@@ -67,7 +67,7 @@ app.get('/cv', async (req, res) => {
     }
 
     // Consulta de datos personales de la tabla persona
-    const [personas] = await pool.query('SELECT id, nombre, apellido, ciudad, foto FROM persona LIMIT 1');
+    const [personas] = await pool.query('SELECT id, nombre, apellido, ciudad, foto, profesion, email, telefono, linkedin, github FROM persona LIMIT 1');
     if (personas.length === 0) {
       return res.status(404).json({ error: 'No se encontraron datos personales registrados en la tabla persona' });
     }
@@ -82,13 +82,7 @@ app.get('/cv', async (req, res) => {
 
     // Respuesta con el formato consolidado
     return res.status(200).json({
-      persona: {
-        id: persona.id,
-        nombre: persona.nombre,
-        apellido: persona.apellido,
-        ciudad: persona.ciudad,
-        foto: persona.foto,
-      },
+      persona: persona,
       formacion: formacion,
     });
   } catch (error) {

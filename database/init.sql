@@ -1,5 +1,4 @@
--- Base de datos para la Práctica Final de Docker
--- Creación y selección de la base de datos
+-- Base de datos para la Práctica Final de Docker - CV Personal
 CREATE DATABASE IF NOT EXISTS cv_db;
 USE cv_db;
 
@@ -9,48 +8,68 @@ CREATE TABLE IF NOT EXISTS persona (
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100) NOT NULL,
     ciudad VARCHAR(100) NOT NULL,
-    foto VARCHAR(255) NOT NULL,
+    foto VARCHAR(500) NOT NULL,
+    profesion VARCHAR(200) DEFAULT 'Ingeniera de Sistemas | Especialista en QA',
+    email VARCHAR(150) DEFAULT 'veravelasqueznoemirosio@gmail.com',
+    telefono VARCHAR(50) DEFAULT '+591 78836023',
+    linkedin VARCHAR(255) DEFAULT 'https://www.linkedin.com/in/noemi-rosio-vera-velasquez-30351a263',
+    github VARCHAR(255) DEFAULT 'https://github.com/NoeVelasquez',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 2. Tabla: formacion
 CREATE TABLE IF NOT EXISTS formacion (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(150) NOT NULL,
-    institucion VARCHAR(150) NOT NULL,
-    anio VARCHAR(50) NOT NULL,
+    titulo VARCHAR(200) NOT NULL,
+    institucion VARCHAR(200) NOT NULL,
+    anio VARCHAR(100) NOT NULL,
     persona_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (persona_id) REFERENCES persona(id) ON DELETE CASCADE
 );
 
--- Inserción de datos iniciales requeridos
-INSERT INTO persona (id, nombre, apellido, ciudad, foto) 
+-- Inserción de datos reales del CV de Noemi Rosio Vera Velasquez
+INSERT INTO persona (id, nombre, apellido, ciudad, foto, profesion, email, telefono, linkedin, github) 
 VALUES (
     1, 
-    'Marco', 
-    'Via', 
+    'Noemi Rosio', 
+    'Vera Velasquez', 
     'La Paz, Bolivia', 
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600'
-) ON DUPLICATE KEY UPDATE nombre=VALUES(nombre);
+    'https://raw.githubusercontent.com/NoeVelasquez/NoeVelasquez/main/profile.jpg',
+    'Ingeniera de Sistemas | Especialista en Calidad de Software & Tecnologías aplicadas al Aprendizaje',
+    'veravelasqueznoemirosio@gmail.com',
+    '+591 78836023',
+    'https://www.linkedin.com/in/noemi-rosio-vera-velasquez-30351a263',
+    'https://github.com/NoeVelasquez'
+) ON DUPLICATE KEY UPDATE 
+    nombre=VALUES(nombre), 
+    apellido=VALUES(apellido), 
+    ciudad=VALUES(ciudad), 
+    foto=VALUES(foto);
 
 INSERT INTO formacion (titulo, institucion, anio, persona_id) 
 VALUES 
 (
-    'Licenciatura en Ingeniería de Sistemas', 
-    'Universidad Mayor de San Andrés', 
-    '2018 - 2023', 
+    'Ingeniería de Sistemas', 
+    'Universidad Salesiana de Bolivia', 
+    'Graduada en 2022', 
     1
 ),
 (
-    'Diplomado en DevOps, Docker & Cloud Architecture', 
+    'Diplomado en Educación Superior por Competencias y Tecnologías para el Aprendizaje y el Conocimiento (TAC)', 
+    'Universidad Salesiana de Bolivia', 
+    '2023', 
+    1
+),
+(
+    'Diplomado en Educación Superior', 
+    'Universidad de Los Andes', 
+    '2023', 
+    1
+),
+(
+    'Diplomado en Desarrollo Full Stack', 
     'Universidad Simón I. Patiño (USIP)', 
-    '2024', 
-    1
-),
-(
-    'Especialización en Desarrollo Web Full Stack & Microservicios', 
-    'Tech Institute Internacional', 
-    '2024 - 2025', 
+    'En curso (2026 – Actualidad)', 
     1
 );
