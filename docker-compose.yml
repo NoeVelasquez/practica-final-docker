@@ -2,7 +2,6 @@ services:
   # 1. Servicio Base de Datos MySQL 8.0
   database:
     image: mysql:8.0
-    container_name: cv-database
     restart: always
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
@@ -29,7 +28,6 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     image: veravelasquez-backend:v1
-    container_name: cv-backend
     restart: always
     environment:
       PORT: 4000
@@ -52,7 +50,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     image: veravelasquez-frontend:v1
-    container_name: cv-frontend
     restart: always
     ports:
       - "3000:3000"
